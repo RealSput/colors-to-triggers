@@ -1,6 +1,6 @@
 import '@g-js-api/g.js';
 await $.exportConfig({
-	type: 'savefile',
+	type: 'live_editor',
 	options: {
 		info: true
 	}
@@ -11,7 +11,8 @@ let parse_color = (input_color) => {
 	let result = {
 		OBJ_ID: 899,
 		DURATION: 0,
-		X: 15
+		X: 15,
+		36: 1
 	};
 	spl.forEach((property, i) => {
 		if (!(i % 2)) {
@@ -48,12 +49,17 @@ let parse_color = (input_color) => {
 let level_options = level.raw_levelstring.split(';').shift().split(',');
 let colors = level_options[level_options.indexOf("kS38") + 1].split('|');
 let y_off = 15;
-colors.forEach((x, i) => {
+let colobjs = [];
+colors.forEach(x => {
 	let clt = parse_color(x);
-	if (clt.TARGET_COLOR < 1000) {
+	colobjs.push(clt);
+});
+colobjs = colobjs.filter(x => x.TARGET_COLOR < 1000);
+colobjs.sort((a, b) => a.TARGET_COLOR - b.TARGET_COLOR);
+colobjs.forEach((clt) => {
 		clt.Y = y_off;
 		clt.TARGET_COLOR = color(clt.TARGET_COLOR);
+		console.log(clt, obj_to_levelstring(clt));
 		object(clt).add();
 		y_off += 30;
-	};
 });
